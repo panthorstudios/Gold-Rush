@@ -8,8 +8,6 @@ class Miner(pygame.sprite.Sprite):
     MINER_SIZE = 32
     def __init__(self,left,top):
         pygame.sprite.Sprite.__init__(self)
-        self.BOARD_LEFT=left
-        self.BOARD_TOP=top
         self.src_image = pygame.image.load('images/miner-%dpx.png' % self.MINER_SIZE) #.convert()
         self.set_location(8,0)
         self.movecnt=self.MOVE_COUNTER
@@ -28,7 +26,7 @@ class Miner(pygame.sprite.Sprite):
     def set_location(self,x,y):
         self.x=x
         self.y=y
-        self.position=(self.BOARD_LEFT+(self.x*self.MINER_SIZE),self.BOARD_TOP+(self.y*self.MINER_SIZE))
+        self.position=((self.x*self.MINER_SIZE),(self.y*self.MINER_SIZE))
 
 
     def update(self,deltat):

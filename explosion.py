@@ -9,8 +9,6 @@ class Explosion(pygame.sprite.Sprite):
     IMAGE_FILE='images/explosion_38f_128x128.png'
 
     def __init__(self,left,top):
-        self.BOARD_LEFT=left
-        self.BOARD_TOP=top
         pygame.sprite.Sprite.__init__(self)
         
         self.src_image=pygame.image.load(self.IMAGE_FILE).convert_alpha() 
@@ -23,8 +21,8 @@ class Explosion(pygame.sprite.Sprite):
     def set_location(self,x,y):
         self.x=x
         self.y=y
-        posx=self.BOARD_LEFT+(x*self.SQUARE_SIZE)-self.XYADJUST
-        posy=self.BOARD_TOP+(y*self.SQUARE_SIZE)-self.XYADJUST
+        posx=(x*self.SQUARE_SIZE)-self.XYADJUST
+        posy=(y*self.SQUARE_SIZE)-self.XYADJUST
         self.position=(posx,posy)
 
     def start_explosion(self,x,y):
