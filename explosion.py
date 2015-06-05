@@ -3,7 +3,7 @@ import pygame
 class Explosion(pygame.sprite.Sprite):
 
 # sprite sheet image (8x5)
-    IMAGE_FILE='images/explosion_38f_128x128.png'
+    IMAGE_FILE='assets/images/explosion_38f_128x128.png'
 
 # these are related to the image config
     EXPLOSION_SIZE=128

@@ -44,20 +44,20 @@ class Game(object):
         self.screen=pygame.display.set_mode((680,600))
         pygame.display.set_caption(self.TITLE)
         self.pressedkey=None
-        self.bellsound=pygame.mixer.Sound('sounds/bell.ogg')
-        self.chargesound=pygame.mixer.Sound('sounds/bomb.ogg')
-        self.yeehawsound=pygame.mixer.Sound('sounds/yeehaw.ogg')
-        self.kachingsound=pygame.mixer.Sound('sounds/kaching.ogg')
+        self.bellsound=pygame.mixer.Sound('assets/sounds/bell.ogg')
+        self.chargesound=pygame.mixer.Sound('assets/sounds/bomb.ogg')
+        self.yeehawsound=pygame.mixer.Sound('assets/sounds/yeehaw.ogg')
+        self.kachingsound=pygame.mixer.Sound('assets/sounds/kaching.ogg')
         self.board=[]
-        self.bgbase=pygame.image.load('images/background.png')
-        self.bg=pygame.image.load('images/background.png') 
-        self.digits=pygame.image.load('images/digits.png') 
+        self.bgbase=pygame.image.load('assets/images/background.png')
+        self.bg=pygame.image.load('assets/images/background.png') 
+        self.digits=pygame.image.load('assets/images/digits.png') 
         self.gamearea=pygame.Surface(self.bg.get_size())
  
 # currently 2 nugget images
         self.nuggets=[]
-        self.nuggets.append(pygame.image.load('images/gold01-%dpx.png' % self.SQUARE_SIZE))
-        self.nuggets.append(pygame.image.load('images/gold02-%dpx.png' % self.SQUARE_SIZE))
+        self.nuggets.append(pygame.image.load('assets/images/gold01-%dpx.png' % self.SQUARE_SIZE))
+        self.nuggets.append(pygame.image.load('assets/images/gold02-%dpx.png' % self.SQUARE_SIZE))
 
         self.explosion=Explosion(0,0,self.SQUARE_SIZE)
         self.explosion_group=pygame.sprite.RenderPlain(self.explosion)
@@ -65,11 +65,11 @@ class Game(object):
         self.miner_group=pygame.sprite.RenderPlain(self.miner)
         self.clock=pygame.time.Clock()
 # add title
-        text=pygame.image.load('images/text_title.png')
+        text=pygame.image.load('assets/images/text_title.png')
         self.screen.blit(text,(self.BOARD_LEFT-8,self.BOARD_LEFT))
 
 # add assay office
-        self.office=pygame.image.load('images/assayoffice.png')
+        self.office=pygame.image.load('assets/images/assayoffice.png')
         self.screen.blit(self.office,(self.ASSAY_X+self.BOARD_LEFT,self.ASSAY_Y))
 
         self.cash=0
@@ -77,17 +77,17 @@ class Game(object):
         self.charges=10
 
 # add "Gold"
-        text=pygame.image.load('images/text_gold.png')
+        text=pygame.image.load('assets/images/text_gold.png')
         self.screen.blit(text,(340,self.BOARD_LEFT))
         self.display_gold()
 
 # add "Cash"
-        text=pygame.image.load('images/text_cash.png')
+        text=pygame.image.load('assets/images/text_cash.png')
         self.screen.blit(text,(self.BOARD_LEFT-8,554))
         self.display_cash()
 
 # add "Charges"
-        text=pygame.image.load('images/text_charges.png')
+        text=pygame.image.load('assets/images/text_charges.png')
         self.screen.blit(text,(380,554))
         self.display_charges()
 
@@ -103,7 +103,7 @@ class Game(object):
         self.charges=10
 
 # load background image every time
-        self.bg=pygame.image.load('images/background.png')
+        self.bg=pygame.image.load('assets/images/background.png')
 
 #redraw assay office        
         self.bg.blit(self.office,(self.ASSAY_X,self.ASSAY_Y-self.BOARD_TOP))
@@ -154,7 +154,9 @@ class Game(object):
         for event in pygame.event.get():
             #print event
             if event.type == KEYDOWN:
-                if event.key in (K_RIGHT,K_LEFT,K_UP,K_DOWN):
+                if event.key == K_ESCAPE:
+                    exit(0) 
+                elif event.key in (K_RIGHT,K_LEFT,K_UP,K_DOWN):
                     self.pressedkey= event.key
                 elif event.key == K_SPACE:
                     pressedspace = True
@@ -198,11 +200,9 @@ class Game(object):
                     for j in range(20):
                         x=randint(0,19)
                         y=randint(2,11)
-                        #print "Checking (%d,%d)" % (x,y)
                         o=self.board[y][x]
                         a=self.board[y-1][x]
                         if o==' ' and a=='*':
-                            print "(%d,%d) collapsed" % (x,y)
                             self.board[y][x]='*'
                             xpos=x*self.SQUARE_SIZE
                             ypos=y*self.SQUARE_SIZE
