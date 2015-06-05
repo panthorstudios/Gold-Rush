@@ -2,7 +2,7 @@
 
 from PIL import Image, ImageFont, ImageDraw
 
-font = ImageFont.truetype('assets/fonts/WEST____.TTF', 48) #load the font
+font = ImageFont.truetype('../assets/fonts/WEST____.TTF', 48) #load the font
 tcolor=(255,212,121)
 maxw=24
 
@@ -15,5 +15,5 @@ for i in range(10):
     pos=(maxw-w)//2
     draw.text((i*maxw+pos,0), str(i), font=font,fill=tcolor) #render the text to the bitmap
 
-image.save('assets/images/digits.png')
+image.save('../assets/images/digits.png')
 
