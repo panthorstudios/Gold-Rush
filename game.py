@@ -9,33 +9,58 @@ from explosion import Explosion
 class Game(object):
     TITLE = "Gold Rush!"
     BOARD_LEFT = 20
-    BOARD_TOP = 100
+    BOARD_TOP = 130
     SQUARE_SIZE = 32
     BLACK = (0,0,0)
+    GREEN=(128,255,128)
+    YELLOW=(255,255,128)
+    RED=(255,128,128)
     FRAMES_PER_SECOND = 30
-    ASSAY_X=540
-    ASSAY_Y=50
+
+    ASSAY_X = 540
+    ASSAY_Y = 84
+    CHARGES_X = 180 
+    CASH_X = 20
+    CASH_OFFSET = 30 
+    GOLD_X = 16
+    CHARGES_OFFSET = 32
+    HEALTH_X =CHARGES_X + 40
+    TITLE_X = 340
 
     def display_gold(self):
         scoretext='%03d' % self.gold
         for i in range(len(scoretext)):
             num=int(scoretext[i])*24
             pos=i*24
-            self.screen.blit(self.digits,(460+(i*24),20),(num,0,24,35))
+            self.screen.blit(self.digits,(self.CASH_X+self.CASH_OFFSET+(i*24),20),(num,0,24,35))
 
     def display_charges(self):
         scoretext='%02d' % self.charges
         for i in range(len(scoretext)):
             num=int(scoretext[i])*24
             pos=i*24
-            self.screen.blit(self.digits,(580+(i*24),554),(num,0,24,35))
+            self.screen.blit(self.digits,(self.CHARGES_X+self.CHARGES_OFFSET+(i*24),20),(num,0,24,35))
 
     def display_cash(self):
         scoretext='%05d' % self.cash
         for i in range(len(scoretext)):
             num=int(scoretext[i])*24
             pos=i*24
-            self.screen.blit(self.digits,(166+(i*24),554),(num,0,24,35))
+            self.screen.blit(self.digits,(self.CASH_X+self.CASH_OFFSET+(i*24),66),(num,0,24,35))
+
+    def display_health(self):
+         h=int(84*(self.health/100.0))
+         b=84-h
+         c=self.GREEN
+         if self.health<20:
+             c=self.RED
+         elif self.health<40:
+             c=self.YELLOW
+         self.screen.fill(c,(self.HEALTH_X,70,h,32))
+         self.screen.fill(self.BLACK,(self.HEALTH_X+h,70,b,32))
+#        num=int(scoretext[i])*24
+#        pos=i*24
+#        self.screen.blit(self.digits,(self.CASH_X+self.CASH_OFFSET+(i*24),66),(num,0,24,35))
 
 
     def __init__(self):
@@ -53,6 +78,7 @@ class Game(object):
         self.bg=pygame.image.load('assets/images/background.png') 
         self.digits=pygame.image.load('assets/images/digits.png') 
         self.gamearea=pygame.Surface(self.bg.get_size())
+        self.is_playing=False
  
 # currently 2 nugget images
         self.nuggets=[]
@@ -64,9 +90,10 @@ class Game(object):
         self.miner=Miner(0,0)
         self.miner_group=pygame.sprite.RenderPlain(self.miner)
         self.clock=pygame.time.Clock()
+
 # add title
         text=pygame.image.load('assets/images/text_title.png')
-        self.screen.blit(text,(self.BOARD_LEFT-8,self.BOARD_LEFT))
+        self.screen.blit(text,(self.TITLE_X,self.BOARD_LEFT))
 
 # add assay office
         self.office=pygame.image.load('assets/images/assayoffice.png')
@@ -75,21 +102,28 @@ class Game(object):
         self.cash=0
         self.gold=0
         self.charges=10
+        self.health=100
 
 # add "Gold"
-        text=pygame.image.load('assets/images/text_gold.png')
-        self.screen.blit(text,(340,self.BOARD_LEFT))
+        text=pygame.image.load('assets/images/nugget.png')
+        self.screen.blit(text,(self.GOLD_X,self.BOARD_LEFT))
         self.display_gold()
 
 # add "Cash"
         text=pygame.image.load('assets/images/text_cash.png')
-        self.screen.blit(text,(self.BOARD_LEFT-8,554))
+        self.screen.blit(text,(self.CASH_X,66))
         self.display_cash()
 
 # add "Charges"
-        text=pygame.image.load('assets/images/text_charges.png')
-        self.screen.blit(text,(380,554))
+        text=pygame.image.load('assets/images/dynamite.png')
+        self.screen.blit(text,(self.CHARGES_X,16))
         self.display_charges()
+
+# add "Miner head"
+        text=pygame.image.load('assets/images/miner_head.png')
+        self.screen.blit(text,(self.CHARGES_X,66))
+        self.display_health()
+
 
         self.setup()
 
@@ -248,7 +282,18 @@ class Game(object):
             self.miner.update_move()
             self.miner_group.update(deltat)
             self.miner_group.draw(self.gamearea)
-
+        if self.miner.y>0:
+            self.health-=0.25
+            if self.health<0:
+                self.health=0
+                pass
+            self.display_health()
+        else:
+            self.health+=1
+            if self.health>100:
+                self.health=100
+            self.display_health()
+  
         self.screen.blit(self.gamearea,(self.BOARD_LEFT,self.BOARD_TOP))
 
         pygame.display.flip()
