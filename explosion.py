@@ -9,20 +9,21 @@ class Explosion(pygame.sprite.Sprite):
     EXPLOSION_SIZE=128
     EXPLOSION_FRAMES=38
     SHEET_WIDTH=8
-
-    def __init__(self,left,top,square_size):
+    SQUARE_SIZE=32
+    def __init__(self,x,y):
 # The square_size parameter is the size of one square
 #   in the playing area (e.g. the size of a nugget)
 
         pygame.sprite.Sprite.__init__(self)
-        self.SQUARE_SIZE=square_size
-        self.XYADJUST=(self.EXPLOSION_SIZE//2) - (self.SQUARE_SIZE //2) 
-        self.src_image=pygame.image.load(self.IMAGE_FILE).convert_alpha() 
 
-        self.set_position(0,0)
+        self.XYADJUST=(self.EXPLOSION_SIZE//2) - (self.SQUARE_SIZE //2) 
+        self.image_src=pygame.image.load(self.IMAGE_FILE) #.convert_alpha() 
+        self.image=pygame.Surface((self.EXPLOSION_SIZE,self.EXPLOSION_SIZE),flags=pygame.SRCALPHA)       
+        self.set_position(x,y)
         self.exploding=False
+
+# Rect which contains current sprite
         self.rect = pygame.Rect((0,0,self.EXPLOSION_SIZE,self.EXPLOSION_SIZE))
-        self.curr_image = pygame.Surface(self.rect.size,flags=pygame.SRCALPHA)
 
     def set_position(self,x,y):
         posx=(x*self.SQUARE_SIZE)-self.XYADJUST
@@ -40,17 +41,14 @@ class Explosion(pygame.sprite.Sprite):
 # First copy the appropriate sprite image to the main image
             irow=self.seqno // self.SHEET_WIDTH
             icol=self.seqno % self.SHEET_WIDTH
-            self.curr_image.blit(self.src_image,(0,0),(icol*self.EXPLOSION_SIZE,irow*self.EXPLOSION_SIZE,self.EXPLOSION_SIZE,self.EXPLOSION_SIZE)) 
-
-# Set image to main image
-            self.image=self.curr_image
-
-# Go to next sequence
+            self.image.blit(self.image_src,(0,0),(icol*self.EXPLOSION_SIZE,irow*self.EXPLOSION_SIZE,self.EXPLOSION_SIZE,self.EXPLOSION_SIZE)) 
             self.seqno += 1
             if self.seqno > self.EXPLOSION_FRAMES:
                 self.exploding=False
+                self.set_position(-1,-1)
+
             self.rect=self.image.get_rect()
+
             self.rect.left=self.position[0]
             self.rect.top=self.position[1]
-        return expl
 
